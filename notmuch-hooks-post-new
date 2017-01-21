@@ -1,0 +1,21 @@
+#!/bin/sh
+set -euo pipefail
+
+notmuch search --output=messages tag:new | \
+	while IFS= read -r msgid; do
+		case "$(bogofilter -T < "$(notmuch search --output=files -- "$msgid" | head -1)")" in
+			H\ *)
+				echo "+bogoham -- $msgid and tag:new"
+				;;
+			S\ *)
+				echo "+bogospam -- $msgid and tag:new"
+				;;
+		esac
+	done | \
+		notmuch tag --batch
+
+
+# notmuch-tag requires at least one search term, and terms with the same prefix ("thread:") are implicitly combined using logical OR
+notmuch tag -inbox +muted -- thread:no-such-thread "$(notmuch search --output=threads tag:new and tag:muted)"
+
+notmuch tag -new tag:new
