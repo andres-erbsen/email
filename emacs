@@ -67,17 +67,23 @@
 
 (setq browse-url-browser-function 'browse-url-generic browse-url-generic-program "/home/oldie/browser.sh")
 
+;; SETUP
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(browse-url-generic-program "/home/oldie/browser.sh")
+ '(browse-url-generic-program "/home/oldie/browser.sh" t)
  '(display-time-24hr-format t)
  '(mail-envelope-from (quote header))
+ '(mail-host-address "andres.systems")
  '(mail-specify-envelope-from t)
+ '(message-default-mail-headers "Cc: 
+Bcc: 
+")
  '(message-send-mail-function (quote message-send-mail-with-sendmail))
  '(message-sendmail-envelope-from (quote header))
+ '(notmuch-crypto-process-mime (quote t))
  '(sendmail-program "msmtp"))
 
 (load-file "~/.notmuch-queries.el")
