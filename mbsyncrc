@@ -20,6 +20,8 @@ Slave :andreser@mailbox.org-local:
 Patterns *
 Sync PullNew PullFlags PushFlags
 
+# andreser@mit.edu
+
 MaildirStore andreser@mit.edu-local
 Path ~/mail/andreser@mit.edu/
 Inbox ~/mail/andreser@mit.edu/INBOX
@@ -38,26 +40,7 @@ Slave :andreser@mit.edu-local:
 Patterns INBOX "Sent Items"
 Sync PullNew PullFlags PushFlags
 
-# krutt.org
-
-MaildirStore andres@krutt.org-local
-Path ~/mail/andres@krutt.org/
-Inbox ~/mail/andres@krutt.org/INBOX
-
-IMAPStore andres@krutt.org-remote
-Host mail.autistici.org
-SSLVersions TLSv1.2
-SSLType IMAPS
-User andres@krutt.org
-PassCmd "cat ~/.keyring/andres@krutt.org.txt"
-
-Channel andres@krutt.org
-Master :andres@krutt.org-remote:
-Slave :andres@krutt.org-local:
-Patterns *
-Sync PullNew PullFlags PushFlags
-
-# GMail: andres.erbsen@gmail.com
+# andres.erbsen@gmail.com
 
 MaildirStore andres.erbsen@gmail.com-local
 Path ~/mail/andres.erbsen@gmail.com/
@@ -74,9 +57,9 @@ Channel andres.erbsen@gmail.com
 Master :andres.erbsen@gmail.com-remote:
 Slave :andres.erbsen@gmail.com-local:
 Patterns *
-Sync PullNew PullFlags PushFlags
+Sync PullNew PullFlags
 
-# GMail: andreser.async@gmail.com
+# andreser.async@gmail.com
 
 MaildirStore andreser.async@gmail.com-local
 Path ~/mail/andreser.async@gmail.com/
@@ -93,23 +76,4 @@ Channel andreser.async@gmail.com
 Master :andreser.async@gmail.com-remote:
 Slave :andreser.async@gmail.com-local:
 Patterns *
-Sync PullNew PullFlags PushFlags
-
-# GMail: theshad3@gmail.com
-
-MaildirStore theshad3@gmail.com-local
-Path ~/mail/theshad3@gmail.com/
-Inbox ~/mail/theshad3@gmail.com/INBOX
-
-IMAPStore theshad3@gmail.com-remote
-Host imap.gmail.com
-User theshad3@gmail.com
-SSLVersions TLSv1.2
-SSLType IMAPS
-PassCmd "cat $HOME/.keyring/theshad3@gmail.com.txt"
-
-Channel theshad3@gmail.com
-Master :theshad3@gmail.com-remote:
-Slave :theshad3@gmail.com-local:
-Patterns *
-Sync PullNew PullFlags PushFlags
+Sync PullNew PullFlags
