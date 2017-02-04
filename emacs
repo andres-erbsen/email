@@ -9,42 +9,63 @@
 			(lambda ()
 			  "archive message"
 			  (interactive)
-			  (notmuch-search-tag (list "+ham" "-spam" "-inbox"))
+			  (notmuch-search-tag (list "+ham" "-spam" "-dormspam" "-inbox"))
 			  (when (notmuch-search-get-result)
 				(goto-char (notmuch-search-result-end)))))
 (define-key notmuch-show-mode-map "a"
 			(lambda ()
 			  "archive message"
 			  (interactive)
-			  (notmuch-show-tag (list "+ham" "-spam" "-inbox"))
+			  (notmuch-show-tag (list "+ham" "-spam" "-dormspam" "-inbox"))
 			  (unless (notmuch-show-next-open-message)
 				(notmuch-show-next-thread t))))
 (define-key notmuch-show-mode-map "A"
 			(lambda ()
 			  "archive thread"
 			  (interactive)
-			  (notmuch-show-tag-all (list "+ham" "-spam" "-inbox"))
+			  (notmuch-show-tag-all (list "+ham" "-spam" "-dormspam" "-inbox"))
+			  (notmuch-show-next-thread t)))
+
+(define-key notmuch-search-mode-map "d"
+			(lambda ()
+			  "mark message as dormspam"
+			  (interactive)
+			  (notmuch-search-tag (list "+ham" "-spam" "+dormspam" "-inbox"))
+			  (when (notmuch-search-get-result)
+				(goto-char (notmuch-search-result-end)))))
+(define-key notmuch-show-mode-map "d"
+			(lambda ()
+			  "mark message as dormspam"
+			  (interactive)
+			  (notmuch-show-tag (list "+ham" "-spam" "+dormspam" "-inbox"))
+			  (unless (notmuch-show-next-open-message)
+				(notmuch-show-next-thread t))))
+(define-key notmuch-show-mode-map "D"
+			(lambda ()
+			  "mark thread as dormspam"
+			  (interactive)
+			  (notmuch-show-tag-all (list "+ham" "-spam" "+dormspam" "-inbox"))
 			  (notmuch-show-next-thread t)))
 
 (define-key notmuch-search-mode-map "s"
 			(lambda ()
 			  "mark message as spam"
 			  (interactive)
-			  (notmuch-search-tag (list "-ham" "+spam" "-inbox"))
+			  (notmuch-search-tag (list "-ham" "+spam" "-dormspam" "-inbox"))
 			  (when (notmuch-search-get-result)
 				(goto-char (notmuch-search-result-end)))))
 (define-key notmuch-show-mode-map "s"
 			(lambda ()
 			  "mark message as spam"
 			  (interactive)
-			  (notmuch-show-tag (list "-ham" "+spam" "-inbox"))
+			  (notmuch-show-tag (list "-ham" "+spam" "-dormspam" "-inbox"))
 			  (unless (notmuch-show-next-open-message)
 				(notmuch-show-next-thread t))))
 (define-key notmuch-show-mode-map "S"
 			(lambda ()
 			  "mark thread as spam"
 			  (interactive)
-			  (notmuch-show-tag-all (list "-ham" "+spam" "-inbox"))
+			  (notmuch-show-tag-all (list "-ham" "+spam" "-dormspam" "-inbox"))
 			  (notmuch-show-next-thread t)))
 
 (define-key notmuch-search-mode-map "k"
