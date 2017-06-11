@@ -107,4 +107,18 @@ Bcc:
  '(notmuch-crypto-process-mime (quote t))
  '(sendmail-program "msmtp"))
 
+
+;; to encrypt all mail: (add-hook 'message-setup-hook 'mml-secure-message-encrypt)
+
+;; the following only encrypts mail if all recipients are whitelisted here
+(defun message-encrypt-to-p (r)
+  "Should we encrypt messages that to only recipient r?"
+  (or
+    (string-match-p "andreser@mit.edu" r)))
+(defun message-security-by-recipients ()
+  "Sets the message security settings based on the recipient"
+  (let ((recipients (mapcar #'mail-strip-quoted-names (apply #'append (mapcar #'message-tokenize-header (mapcar #'message-fetch-field ["To" "cc" "BCC"]))))))
+	   (when (not (memq nil (mapcar #'message-encrypt-to-p recipients))) (mml-secure-message-encrypt))))
+(add-hook 'message-send-hook #'message-security-by-recipients)
+
 (load-file "~/.notmuch-queries.el")
