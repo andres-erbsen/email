@@ -1,49 +1,51 @@
 #!/bin/sh
 set -euo pipefail
 
-# Synchronize filename flagss so files don't move during the next loop.
+# Synchronize filename flags so files don't move during the next loop.
 # Alternatively, disable maildir.synchronize_flags in notmuch-config.
 notmuch tag +touch tag:new && notmuch tag -touch tag:touch
 
 notmuch search --output=messages tag:new | \
 	while IFS= read -r msgid; do
-		file="$(notmuch search --output=files -- "$msgid" | head -1)"
-		[ -f "$file" ]
+		(
+			file="$(notmuch search --output=files -- "$msgid" | head -1)"
+			[ -f "$file" ]
 
-		case "$( < "$file" bogofilter -T)" in
-			H\ *)
-				echo "+bogoham -- $msgid and tag:new"
-				;;
-			S\ *)
-				echo "+bogospam -- $msgid and tag:new"
-				;;
-		esac
+			case "$( < "$file" bogofilter -T)" in
+				H\ *)
+					echo "+bogoham -- $msgid and tag:new"
+					;;
+				S\ *)
+					echo "+bogospam -- $msgid and tag:new"
+					;;
+			esac
 
-		< "$file" \
-			formail -X list-id | \
-			cut -d'<' -f2 | cut -d'>' -f1 | \
-			sort | uniq | (grep . || true) | \
-			while IFS= read -r addr; do
-				echo "+has-list-id +list-id:$addr -- $msgid and tag:new"
-			done
+			< "$file" \
+				formail -X list-id | \
+				cut -d'<' -f2 | cut -d'>' -f1 | \
+				sort | uniq | (grep . || true) | \
+				while IFS= read -r addr; do
+					echo "+has-list-id +list-id:$addr -- $msgid and tag:new"
+				done
 
-		< "$file" \
-			formail -X received | \
-			tr '\n' ' ' | \
-			sed $'s/Received: /\\\n/g' | \
-			(grep -iwo 'for[[:blank:]][[:blank:]]*<[^[:blank:]]*>[[:blank:]]*;' || true) | \
-			cut -d'<' -f2 | cut -d'>' -f1 | \
-			sort | uniq | (grep . || true) | \
-			while IFS= read -r addr; do
-				echo "+received-for:$addr -- $msgid and tag:new"
-			done
+			< "$file" \
+				formail -X received | \
+				tr '\n' ' ' | \
+				sed $'s/Received: /\\\n/g' | \
+				(grep -iwo 'for[[:blank:]][[:blank:]]*<[^[:blank:]]*>[[:blank:]]*;' || true) | \
+				cut -d'<' -f2 | cut -d'>' -f1 | \
+				sort | uniq | (grep . || true) | \
+				while IFS= read -r addr; do
+					echo "+received-for:$addr -- $msgid and tag:new"
+				done
 
-		< "$file" \
-			formail -X X-Auto-Response-Suppress | \
-			head -1 | (grep . || true) | \
-			while IFS= read -r addr; do
-				echo "+has-x-auto-response-suppress -- $msgid and tag:new"
-			done
+			< "$file" \
+				formail -X X-Auto-Response-Suppress | \
+				head -1 | (grep . || true) | \
+				while IFS= read -r addr; do
+					echo "+has-x-auto-response-suppress -- $msgid and tag:new"
+				done
+		) || echo "ERROR: failed to process message $msgid"
 	done | \
 		notmuch tag --batch
 

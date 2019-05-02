@@ -30,6 +30,7 @@ IMAPStore andreser@mit.edu-remote
 Host imap.exchange.mit.edu
 SSLVersions TLSv1.2
 SSLType IMAPS
+AuthMechs PLAIN
 User andreser
 PassCmd "cat $HOME/.keyring/andreser@mit.edu.txt"
 PipelineDepth 200

@@ -24,19 +24,29 @@ while IFS= read -r line; do
 	fi
 done < "$configfile"
 
+pid="$$"
 (
-	echo -ne "L login $user \""
-	sh -c "$passcmd" | tr -d '\n'
-	echo -ne "\"\r\nS SELECT INBOX\r\n"
+	printf "L login $user \"" ; sh -c "$passcmd" | tr -d '\n' ; printf "\"\r\n"
+	sleep 1
+	printf "S SELECT INBOX\r\n"
+	sleep 1
 	while : ; do
 		echo -ne "I IDLE\r\n"
 		sleep "$idleseconds"
 		echo -ne "DONE\r\n"
 	done
-) | openssl s_client -tls1_2 -verify_return_error -connect "$host:$port" -servername "$host" -verify_hostname "$host" -quiet \
-	| while IFS= read -r line; do
+	kill "$pid"
+) | (
+	openssl s_client -tls1_2 -verify_return_error -connect "$host:$port" -servername "$host" -verify_hostname "$host" -quiet
+	kill "$pid"
+) | (
+	while IFS= read -r line; do
+		printf "%s\n" "$line" # debug
 		case "$line" in
 			*"* "*" EXISTS"*)
-				mbsync --quiet "$account" && notmuch new # --quiet
+				mbsync --quiet "$account"
+				notmuch new # --quiet
 		esac
 	done
+	kill "$pid"
+)
