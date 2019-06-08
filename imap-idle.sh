@@ -41,11 +41,13 @@ pid="$$"
 	kill "$pid"
 ) | (
 	while IFS= read -r line; do
-		printf "%s\n" "$line" # debug
+		# printf "%s\n" "$line" # debug
 		case "$line" in
 			*"* "*" EXISTS"*)
+				t="$(date --iso=seconds)"
 				mbsync --quiet "$account"
 				notmuch new # --quiet
+				echo "Up to date as of $t."
 		esac
 	done
 	kill "$pid"
